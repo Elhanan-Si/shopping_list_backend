@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
+import { Item } from './entities/item.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ItemsService {
-  create(createItemDto: CreateItemDto) {
-    return 'This action adds a new item';
+  constructor (
+    @InjectRepository(Item)
+    private readonly itemRepository: Repository<Item>,
+  ) {}
+
+  async create(createItemDto: CreateItemDto): Promise<Item> {
+    const item = this.itemRepository.create(createItemDto);
+    return await this.itemRepository.save(item);
   }
 
-  findAll() {
-    return `This action returns all items`;
+  async findAll(): Promise<Item[]> {
+    return await this.itemRepository.find()
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} item`;
+  async findOne(id: string): Promise<Item | null> {
+    return await this.itemRepository.findOne({ where: { id } });
   }
 
-  update(id: string, updateItemDto: UpdateItemDto) {
-    return `This action updates a #${id} item`;
+  async update(id: string, updateItemDto: UpdateItemDto): Promise<Item | null> {
+    await this.itemRepository.update(id, updateItemDto);
+    return await this.findOne(id);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} item`;
+  async remove(id: string): Promise<void> {
+    await this.itemRepository.delete(id);
   }
 }

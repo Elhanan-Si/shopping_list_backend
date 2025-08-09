@@ -3,9 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
 import { ItemsModule } from './items/items.module';
-import { User } from './users/entities/user.entity';
 import { Item } from './items/entities/item.entity';
 
 
@@ -19,9 +17,8 @@ import { Item } from './items/entities/item.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASS,
       database: process.env.DATABASE_NAME,
-      entities: [User, Item]
+      entities: [Item]
     }),
-    UsersModule,
     ItemsModule
   ],
   controllers: [AppController],
